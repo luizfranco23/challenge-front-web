@@ -2,30 +2,12 @@ import * as S from "./style";
 import React from 'react';
 import Arrow from "../../../src/img/arrow.svg";
 import Star from "../../../src/img/star.png";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Wine } from '../../../src/types/IProducts'
+import useGetProductById from "../../services/GetIdProducts";
+
 
 export default function CatalogContainer() {
 
-  const [data, setData] = useState<Wine[]>([]);
-
-  useEffect(() => {
-    const localStorageId = localStorage.getItem("id");
-
-    async function getProductId() {
-      try {
-        const response = await axios.get("http://localhost:3000/products");
-        const productData = response.data.items;
-        const filterData = productData.find((e: any) => e.id == localStorageId);
-        setData(filterData ? [filterData] : []);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    getProductId();
-  }, []);
+  const { data } = useGetProductById();
 
   return (
     <S.ContainerCatalog>
