@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import * as S from "./style";
 import { Link } from "react-router-dom";
 import { Wine } from "../../types/IProducts";
-import Arrow from '../../img/arrow.svg'
 import useGetProducts from "../../services/GetDataProducts";
+import Pagination from "../Pagination"; // Importe o componente Pagination criado
 
 // Type definition
 type CardProductProps = {
@@ -31,34 +31,8 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
     localStorage.setItem("id", id);
   };
 
-  const nextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  const prevPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
-  };
-
-  const goToPage = (pageNumber: any) => {
+  const onPageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-  };
-
-  const getPageButtons = () => {
-    const pageButtons = [];
-    const startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
-    const endPage = Math.min(totalPages, startPage + maxButtons - 1);
-    for (let i = startPage; i <= endPage; i++) {
-      pageButtons.push(
-        <S.ButtonNumberPage
-          key={i}
-          onClick={() => goToPage(i)}
-          className={currentPage === i ? "active" : ""}
-        >
-          {i}
-        </S.ButtonNumberPage>
-      );
-    }
-    return pageButtons;
   };
 
   // JSX rendering
@@ -121,10 +95,12 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
       </S.MainCardContainer>
 
       <S.Pagination>
-        {getPageButtons()}
-        <S.ButtonNextPage onClick={nextPage} disabled={currentPage === totalPages}>
-          Próximo <img src={Arrow} alt="Próxima Página" />
-        </S.ButtonNextPage>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          maxButtons={maxButtons}
+          onPageChange={onPageChange}
+        />
       </S.Pagination>
     </S.Container>
   );
