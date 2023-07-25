@@ -1,7 +1,8 @@
-import { styled } from "styled-components";
-import { Colors } from "../../global/globalstyled";
+import { styled } from 'styled-components';
+import { Colors } from '../../global/globalstyled';
 
 export const ContainerCatalog = styled.div`
+  margin-top: 5%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -15,7 +16,11 @@ export const Catalog = styled.div`
   width: 100%;
   justify-content: center;
 `;
-export const ImageProduct = styled.div``;
+export const ImageProduct = styled.div`
+  img {
+    width: 400px;
+  }
+`;
 
 export const InformationCatalog = styled.div`
   width: 40%;
@@ -33,7 +38,7 @@ export const RegionProduct = styled.div`
   align-items: flex-start;
 
   img {
-    width: 18px;
+    width: 12px;
   }
 `;
 export const Region = styled.div`
