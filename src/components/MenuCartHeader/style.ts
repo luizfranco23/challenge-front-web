@@ -49,3 +49,5 @@ export const BackPage = styled.div`
     width: 27px;
   }
 `;
+
+export const ContainerProducts = styled.div``;
