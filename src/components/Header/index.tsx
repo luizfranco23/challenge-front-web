@@ -6,7 +6,7 @@ import Search from '../../img/search.svg';
 import Count from '../../img/account.svg';
 import Bag from '../../img/bag.png';
 import Logo from '../../img/logo.svg';
-import MenuCart from '../MenuCartHeader';
+import { MenuCart } from '../MenuCartHeader';
 
 export function Header() {
 
@@ -19,13 +19,10 @@ export function Header() {
 
     return (
         <>
-            {
-                showMenu
-                    ?
-                    <MenuCart />
-                    :
-                    null
-            }
+
+            {showMenu ? <MenuCart showMenu={showMenu} setShowMenu={setShowMenu} showMenuClick={showMenuClick} /> : null}
+
+
 
             <S.HeaderContainer>
                 <S.Logo>

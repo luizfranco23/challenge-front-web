@@ -1,19 +1,19 @@
-// Import statements
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as S from "./style";
-import { Link } from "react-router-dom";
 import { Wine } from "../../types/IProducts";
 import useGetProducts from "../../services/GetDataProducts";
-import Pagination from "../Pagination"; // Importe o componente Pagination criado
+import Pagination from "../Pagination";
+import { MenuCart } from "../MenuCartHeader";
 
-// Type definition
 type CardProductProps = {
   productsFiltred: Wine[];
 };
 
-// Component definition
+interface CartItem extends Wine {
+  quantity: number;
+}
+
 export function CardProduct({ productsFiltred }: CardProductProps) {
-  // State and constants
   const { product } = useGetProducts();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -26,7 +26,6 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
   const currentItems = product?.slice(indexOfFirstItem, indexOfLastItem);
   const currentItemsFilter = productsFiltred?.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Helper functions
   const getId = (id: any) => {
     localStorage.setItem("id", id);
   };
@@ -35,9 +34,35 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
     setCurrentPage(pageNumber);
   };
 
-  // JSX rendering
+
+  const addToCart = (item: Wine) => {
+    // Verifica se o produto já existe no carrinho pelo ID
+    const existingItem = cartItems.find((cartItem) => cartItem.id === item.id);
+
+    // Se o produto já estiver no carrinho, apenas atualiza a quantidade
+    if (existingItem) {
+      setCartItems((prevCartItems) =>
+        prevCartItems.map((cartItem) =>
+          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+        )
+      );
+    } else {
+      // Se o produto não estiver no carrinho, adiciona um novo item ao carrinho com quantidade 1
+      setCartItems((prevCartItems) => [...prevCartItems, { ...item, quantity: 1 }]);
+    }
+  };
+
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    console.log(cartItems);
+  }, [cartItems]);
+
   return (
     <S.Container>
+
+
+
       <S.FinderProducts>{productsFiltred.length} produtos encontrados</S.FinderProducts>
 
       <S.MainCardContainer>
@@ -64,7 +89,7 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
                 </S.MemberClub>
                 <S.NoMember>NÃO SÓCIO WINE R${e.priceNonMember}</S.NoMember>
               </S.Card>
-              <S.Button>ADICIONAR</S.Button>
+              <S.Button onClick={() => addToCart(e)}>ADICIONAR</S.Button>
             </S.ContainerCard>
           ))
           : currentItems?.map((item) => (
@@ -89,7 +114,7 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
                 </S.MemberClub>
                 <S.NoMember>NÃO SÓCIO WINE R${item.priceNonMember}</S.NoMember>
               </S.Card>
-              <S.Button>ADICIONAR</S.Button>
+              <S.Button onClick={() => addToCart(item)}>ADICIONAR</S.Button>
             </S.ContainerCard>
           ))}
       </S.MainCardContainer>

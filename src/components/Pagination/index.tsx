@@ -37,10 +37,9 @@ const Pagination: React.FC<PaginationType> = ({
 
     return (
         <S.Pagination>
-
             {getPageButtons()}
             <S.ButtonNextPage onClick={nextPage} disabled={currentPage === totalPages}>
-                Próximo <img src={Arrow} alt="Próxima Página" />
+                Próximo &gt;&gt;
             </S.ButtonNextPage>
         </S.Pagination>
     );

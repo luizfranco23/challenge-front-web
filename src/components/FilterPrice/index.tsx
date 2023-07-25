@@ -22,7 +22,6 @@ export function FilterPrice({ getDataFilter }: FilterPriceProps): JSX.Element {
   const { product } = useGetProducts();
 
   useEffect(() => {
-    console.log(`chamei`)
     const filterData = () => {
       if (selectedPriceRange) {
         const filteredData = product.filter((e) => {

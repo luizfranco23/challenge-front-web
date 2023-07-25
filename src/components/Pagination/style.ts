@@ -18,6 +18,10 @@ export const ButtonNextPage = styled.button`
   cursor: pointer;
   width: 80px;
   height: 40px;
+
+  img {
+    color: ${Colors.pink};
+  }
 `;
 
 export const ButtonNumberPage = styled.button`
