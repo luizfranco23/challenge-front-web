@@ -10,6 +10,8 @@ export default function CatalogContainer() {
 
   const { data } = useGetProductById();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [quantity, setQuantity] = useState(1);
+
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -32,7 +34,7 @@ export default function CatalogContainer() {
                   <img src={Arrow} alt="Arrow" />
                   <p>{data[0]?.region}</p>
                 </S.Region>
-                <S.TitleProduct>{data[0]?.name}\</S.TitleProduct>
+                <S.TitleProduct>{data[0]?.name}</S.TitleProduct>
 
                 <S.Country>
                   <img src={data[0]?.flag} alt="" />
@@ -54,7 +56,7 @@ export default function CatalogContainer() {
                 <p>R$</p>
                 <div>{data[0]?.priceMember}</div>
               </S.PriceMember>
-              <S.NoMember>NÃO SÓCIO R$ {data[0]?.priceNonMember}/UN</S.NoMember>
+              <S.NoMember>NÃO SÓCIO R$ {data[0]?.priceNonMember}UN</S.NoMember>
             </S.PriceProduct>
 
             <S.ComenterSommelier>
@@ -64,12 +66,13 @@ export default function CatalogContainer() {
 
             <S.ButtonAddProduct>
               <S.AmountProduct>
-                <div>-</div>
-                <p>1</p>
-                <div>+</div>
+                <div onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</div>
+                <p>{quantity}</p>
+                <div onClick={() => setQuantity(quantity + 1)}>+</div>
               </S.AmountProduct>
+
               <S.Feature />
-              <S.AddProduct onClick={() => addToCart(data[0], cartItems, setCartItems)}>Adicionar</S.AddProduct>
+              <S.AddProduct onClick={() => addToCart(data[0], cartItems, setCartItems, quantity)}>Adicionar</S.AddProduct>
             </S.ButtonAddProduct>
           </S.InformationCatalog>
         </S.Catalog>

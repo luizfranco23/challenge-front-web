@@ -4,7 +4,6 @@ import leftarrow from '../../img/left-arrow.png';
 import { CartItem } from '../../types/cartItem';
 import { MenuCartProps } from '../../types/menuCart';
 import { getTotalItemsCount } from '../../hooks/getTotalItemsCount';
-import { json } from 'stream/consumers';
 
 export const MenuCart: React.FC<MenuCartProps> = ({ showMenuClick }) => {
     const [cardProducts, setCardProducts] = useState<CartItem[]>([]);
@@ -43,7 +42,10 @@ export const MenuCart: React.FC<MenuCartProps> = ({ showMenuClick }) => {
 
     const removeProduct = (productId: number) => {
         const updatedCartItems = cardProducts.filter((product) => product.id !== productId);
-        updateCartItems(updatedCartItems);
+        setCardProducts(updatedCartItems);
+        localStorage.setItem('cart', JSON.stringify(updatedCartItems))
+        console.log(cardProducts);
+
     };
 
 
