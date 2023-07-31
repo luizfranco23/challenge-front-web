@@ -3,19 +3,18 @@ import * as S from './style';
 import { Wine } from '../../types/IProducts';
 import useGetProducts from '../../services/GetDataProducts';
 import Pagination from '../Pagination';
+import { addToCart } from '../../hooks/cartUtils';
+import { CartItem } from '../../types/cartItem';
 
 type CardProductProps = {
   productsFiltred: Wine[];
 };
 
-interface CartItem extends Wine {
-  quantity: number;
-}
-
 export function CardProduct({ productsFiltred }: CardProductProps) {
   const { product } = useGetProducts();
   const [currentPage, setCurrentPage] = useState(1);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
   const itemsPerPage = 9;
   const maxButtons = 3;
   const totalPages =
@@ -25,10 +24,7 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = product?.slice(indexOfFirstItem, indexOfLastItem);
-  const currentItemsFilter = productsFiltred?.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItemsFilter = productsFiltred?.slice(indexOfFirstItem, indexOfLastItem);
 
   const getId = (id: any) => {
     localStorage.setItem('id', id);
@@ -38,44 +34,17 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
     setCurrentPage(pageNumber);
   };
 
-  const addToCart = (item: Wine) => {
-
-    const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
-
-    if (existingItem) {
-      setCartItems(prevCartItems =>
-        prevCartItems.map(cartItem =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        )
-      );
-    } else {
-      setCartItems(prevCartItems => [
-        ...prevCartItems,
-        { ...item, quantity: 1 },
-      ]);
-      localStorage.setItem('cart', JSON.stringify(cartItems));
-    }
-  };
-
-
   useEffect(() => {
-    const localData = localStorage.getItem('cart');
-    if (localData) {
-      setCartItems(JSON.parse(localData));
-    }
-  }, []);
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   return (
     <S.Container>
-      <S.FinderProducts>
-        {productsFiltred.length} produtos encontrados
-      </S.FinderProducts>
+      <S.FinderProducts>{productsFiltred.length} produtos encontrados</S.FinderProducts>
 
       <S.MainCardContainer>
-        {productsFiltred.length > 0
-          ? currentItemsFilter.map((e: any) => (
+        {productsFiltred.length > 0 ? (
+          currentItemsFilter.map((e: any) => (
             <S.ContainerCard key={e.id} onClick={() => getId(e.id)}>
               <S.Card to={'/produto'}>
                 <S.ImageProduct>
@@ -97,10 +66,11 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
                 </S.MemberClub>
                 <S.NoMember>NÃO SÓCIO WINE R${e.priceNonMember}</S.NoMember>
               </S.Card>
-              <S.Button onClick={() => addToCart(e)}>ADICIONAR</S.Button>
+              <S.Button onClick={() => addToCart(e, cartItems, setCartItems)}>ADICIONAR</S.Button>
             </S.ContainerCard>
           ))
-          : currentItems?.map(item => (
+        ) : (
+          currentItems?.map((item) => (
             <S.ContainerCard key={item.id} onClick={() => getId(item.id)}>
               <S.Card to={'/produto'}>
                 <S.ImageProduct>
@@ -124,9 +94,10 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
                   NÃO SÓCIO WINE R${item.priceNonMember}
                 </S.NoMember>
               </S.Card>
-              <S.Button onClick={() => addToCart(item)}>ADICIONAR</S.Button>
+              <S.Button onClick={() => addToCart(item, cartItems, setCartItems)}>ADICIONAR</S.Button>
             </S.ContainerCard>
-          ))}
+          ))
+        )}
       </S.MainCardContainer>
 
       <S.Pagination>

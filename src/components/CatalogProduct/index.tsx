@@ -1,13 +1,19 @@
 import * as S from "./style";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Arrow from "../../../src/img/arrow.svg";
 import Star from "../../../src/img/star.png";
 import useGetProductById from "../../services/GetIdProducts";
-
+import { addToCart } from "../../hooks/cartUtils";
+import { CartItem } from "../../types/cartItem";
 
 export default function CatalogContainer() {
 
   const { data } = useGetProductById();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   return (
     <S.ContainerCatalog>
@@ -26,7 +32,7 @@ export default function CatalogContainer() {
                   <img src={Arrow} alt="Arrow" />
                   <p>{data[0]?.region}</p>
                 </S.Region>
-                <S.TitleProduct>{data[0]?.name}</S.TitleProduct>
+                <S.TitleProduct>{data[0]?.name}\</S.TitleProduct>
 
                 <S.Country>
                   <img src={data[0]?.flag} alt="" />
@@ -63,7 +69,7 @@ export default function CatalogContainer() {
                 <div>+</div>
               </S.AmountProduct>
               <S.Feature />
-              <S.AddProduct>Adicionar</S.AddProduct>
+              <S.AddProduct onClick={() => addToCart(data[0], cartItems, setCartItems)}>Adicionar</S.AddProduct>
             </S.ButtonAddProduct>
           </S.InformationCatalog>
         </S.Catalog>
