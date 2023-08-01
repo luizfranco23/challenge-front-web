@@ -73,6 +73,7 @@ export const Button = styled.button`
   padding: 30px;
   border: none;
   border-radius: 3px;
+  cursor: pointer;
   height: 50px;
 `;
 

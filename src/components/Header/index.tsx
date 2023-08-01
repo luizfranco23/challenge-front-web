@@ -1,39 +1,40 @@
-// Header.js
+import React, { useState, useEffect } from 'react';
 import * as S from './style';
-import React, { useState } from 'react';
 import Menu from '../../img/menu.png';
 import Search from '../../img/search.svg';
 import Count from '../../img/account.svg';
 import Bag from '../../img/bag.png';
 import Logo from '../../img/logo.svg';
-import MenuCart from '../MenuCartHeader';
+import { MenuCart } from '../MenuCart';
+import { CartItem } from '../../types/cartItem';
+import { getTotalItemsCount } from '../../hooks/getTotalItemsCount';
 
 export function Header() {
+    const [showMenu, setShowMenu] = useState<boolean>(false);
+    const [cardProducts, setCardProducts] = useState<CartItem[]>([]);
 
-    const [showMenu, setShowMenu] = useState<boolean>(false)
 
     const showMenuClick = () => {
         setShowMenu(!showMenu);
     };
 
+    useEffect(() => {
+        const localData = localStorage.getItem('cart');
+        if (localData) setCardProducts(JSON.parse(localData));
+    }, [cardProducts]);
+
 
     return (
         <>
-            {
-                showMenu
-                    ?
-                    <MenuCart />
-                    :
-                    null
-            }
+            {showMenu && <MenuCart showMenu={showMenu} setShowMenu={setShowMenu} showMenuClick={showMenuClick} />}
 
             <S.HeaderContainer>
                 <S.Logo>
-                    <button >
-                        <img src={Menu} alt="" />
+                    <button>
+                        <img src={Menu} alt="Menu" />
                     </button>
                     <div>
-                        <img src={Logo} alt="" />
+                        <a href="/"><img src={Logo} alt="Logo" /></a>
                     </div>
                     <ul>
                         <li>
@@ -60,12 +61,12 @@ export function Header() {
                     <a id="acountheader" href="/">
                         <img src={Count} alt="Conta" />
                     </a>
-                    <div onClick={showMenuClick}>
+                    <S.BagCart onClick={showMenuClick}>
                         <img src={Bag} alt="Carrinho" />
-                    </div>
+                        <S.TotalProducts>{getTotalItemsCount(cardProducts)}</S.TotalProducts>
+                    </S.BagCart>
                 </S.HeaderIcons>
             </S.HeaderContainer>
         </>
-
     );
 }
