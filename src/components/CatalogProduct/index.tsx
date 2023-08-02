@@ -14,8 +14,6 @@ export default function CatalogContainer() {
   const handleAddToCart = () => {
     if (data.length > 0) {
       addToCart(data[0]);
-      console.log(data);
-
     }
   };
   return (

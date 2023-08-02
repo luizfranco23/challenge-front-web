@@ -28,7 +28,7 @@ export function Header() {
 
 
     return (
-        <>t
+        <>
             {showMenu && <MenuCart showMenu={showMenu} setShowMenu={setShowMenu} showMenuClick={showMenuClick} />}
 
             <S.HeaderContainer>
