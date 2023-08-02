@@ -1,5 +1,9 @@
 import { Wine } from './IProducts';
 
 export interface CartItem extends Wine {
- quantity: number;
+  id: number;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
 }

@@ -1,19 +1,26 @@
 // Import statements
 import React, { useState } from "react";
 import * as S from "./style";
-import { Link } from "react-router-dom";
 import { Wine } from "../../types/IProducts";
 import useGetProducts from "../../services/GetDataProducts";
 import Pagination from "../Pagination"; // Importe o componente Pagination criado
+import { useCart } from "../../contexts/CartContext";
 
-// Type definition
 type CardProductProps = {
   productsFiltred: Wine[];
 };
 
-// Component definition
 export function CardProduct({ productsFiltred }: CardProductProps) {
-  // State and constants
+
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    if (product.length > 0) {
+      addToCart(product[0]);
+    }
+  };
+
+
   const { product } = useGetProducts();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -26,7 +33,6 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
   const currentItems = product?.slice(indexOfFirstItem, indexOfLastItem);
   const currentItemsFilter = productsFiltred?.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Helper functions
   const getId = (id: any) => {
     localStorage.setItem("id", id);
   };
@@ -35,16 +41,15 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
     setCurrentPage(pageNumber);
   };
 
-  // JSX rendering
   return (
     <S.Container>
       <S.FinderProducts>{productsFiltred.length} produtos encontrados</S.FinderProducts>
 
       <S.MainCardContainer>
         {productsFiltred.length > 0
-          ? currentItemsFilter.map((e: any) => (
+          ? currentItemsFilter.map((e) => (
             <S.ContainerCard key={e.id} onClick={() => getId(e.id)}>
-              <S.Card to={'/produto'}>
+              <S.Card to={`/produto/${e.id}`}>
                 <S.ImageProduct>
                   <img src={e.image} alt="" />
                 </S.ImageProduct>
@@ -64,12 +69,12 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
                 </S.MemberClub>
                 <S.NoMember>NÃO SÓCIO WINE R${e.priceNonMember}</S.NoMember>
               </S.Card>
-              <S.Button>ADICIONAR</S.Button>
+              <S.Button onClick={handleAddToCart} >ADICIONAR</S.Button>
             </S.ContainerCard>
           ))
           : currentItems?.map((item) => (
             <S.ContainerCard key={item.id} onClick={() => getId(item.id)}>
-              <S.Card to={'/produto'}>
+              <S.Card to={`/produto/${item.id}`}>
                 <S.ImageProduct>
                   <img src={item.image} alt="" />
                 </S.ImageProduct>
@@ -89,7 +94,7 @@ export function CardProduct({ productsFiltred }: CardProductProps) {
                 </S.MemberClub>
                 <S.NoMember>NÃO SÓCIO WINE R${item.priceNonMember}</S.NoMember>
               </S.Card>
-              <S.Button>ADICIONAR</S.Button>
+              <S.Button onClick={handleAddToCart} >ADICIONAR</S.Button>
             </S.ContainerCard>
           ))}
       </S.MainCardContainer>

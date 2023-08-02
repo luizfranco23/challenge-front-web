@@ -1,31 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import * as S from './style';
+import * as S from './style'
 import Menu from '../../img/menu.png';
 import Search from '../../img/search.svg';
 import Count from '../../img/account.svg';
 import Bag from '../../img/bag.png';
 import Logo from '../../img/logo.svg';
 import { MenuCart } from '../MenuCart';
-import { CartItem } from '../../types/cartItem';
-import { getTotalItemsCount } from '../../hooks/getTotalItemsCount';
+import { useCart } from '../../contexts/CartContext';
+import { getTotalItems } from '../../hooks/getTotalItems';
+
+
+
 
 export function Header() {
     const [showMenu, setShowMenu] = useState<boolean>(false);
-    const [cardProducts, setCardProducts] = useState<CartItem[]>([]);
+    const { cartItems } = useCart();
+    const totalItemsQuantity = getTotalItems(cartItems)
+
+    useEffect(() => {
+        localStorage.getItem('totalItemsQuantity');
+    }, []);
 
 
     const showMenuClick = () => {
         setShowMenu(!showMenu);
     };
 
-    useEffect(() => {
-        const localData = localStorage.getItem('cart');
-        if (localData) setCardProducts(JSON.parse(localData));
-    }, [cardProducts]);
-
 
     return (
-        <>
+        <>t
             {showMenu && <MenuCart showMenu={showMenu} setShowMenu={setShowMenu} showMenuClick={showMenuClick} />}
 
             <S.HeaderContainer>
@@ -63,7 +66,7 @@ export function Header() {
                     </a>
                     <S.BagCart onClick={showMenuClick}>
                         <img src={Bag} alt="Carrinho" />
-                        <S.TotalProducts>{getTotalItemsCount(cardProducts)}</S.TotalProducts>
+                        <S.TotalProducts>{totalItemsQuantity}</S.TotalProducts>
                     </S.BagCart>
                 </S.HeaderIcons>
             </S.HeaderContainer>

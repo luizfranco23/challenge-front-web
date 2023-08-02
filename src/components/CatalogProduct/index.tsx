@@ -3,12 +3,21 @@ import React from 'react';
 import Arrow from "../../../src/img/arrow.svg";
 import Star from "../../../src/img/star.png";
 import useGetProductById from "../../services/GetIdProducts";
+import { useCart } from "../../contexts/CartContext";
 
 
 export default function CatalogContainer() {
 
   const { data } = useGetProductById();
+  const { addToCart } = useCart();
 
+  const handleAddToCart = () => {
+    if (data.length > 0) {
+      addToCart(data[0]);
+      console.log(data);
+
+    }
+  };
   return (
     <S.ContainerCatalog>
       {data.length > 0 ? (
@@ -63,7 +72,7 @@ export default function CatalogContainer() {
                 <div>+</div>
               </S.AmountProduct>
               <S.Feature />
-              <S.AddProduct>Adicionar</S.AddProduct>
+              <S.AddProduct onClick={handleAddToCart}>Adicionar</S.AddProduct>
             </S.ButtonAddProduct>
           </S.InformationCatalog>
         </S.Catalog>
