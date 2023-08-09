@@ -1,21 +1,22 @@
 import * as S from "./style";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Arrow from "../../../src/img/arrow.svg";
 import Star from "../../../src/img/star.png";
 import useGetProductById from "../../services/GetIdProducts";
-import { useCart } from "../../contexts/CartContext";
-
+import { addToCart } from "../../hooks/cartUtils";
+import { CartItem } from "../../types/cartItem";
 
 export default function CatalogContainer() {
 
   const { data } = useGetProductById();
-  const { addToCart } = useCart();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = () => {
-    if (data.length > 0) {
-      addToCart(data[0]);
-    }
-  };
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
+
   return (
     <S.ContainerCatalog>
       {data.length > 0 ? (
@@ -55,7 +56,7 @@ export default function CatalogContainer() {
                 <p>R$</p>
                 <div>{data[0]?.priceMember}</div>
               </S.PriceMember>
-              <S.NoMember>NÃO SÓCIO R$ {data[0]?.priceNonMember}/UN</S.NoMember>
+              <S.NoMember>NÃO SÓCIO R$ {data[0]?.priceNonMember}UN</S.NoMember>
             </S.PriceProduct>
 
             <S.ComenterSommelier>
@@ -65,12 +66,13 @@ export default function CatalogContainer() {
 
             <S.ButtonAddProduct>
               <S.AmountProduct>
-                <div>-</div>
-                <p>1</p>
-                <div>+</div>
+                <div onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</div>
+                <p>{quantity}</p>
+                <div onClick={() => setQuantity(quantity + 1)}>+</div>
               </S.AmountProduct>
+
               <S.Feature />
-              <S.AddProduct onClick={handleAddToCart}>Adicionar</S.AddProduct>
+              <S.AddProduct onClick={() => addToCart(data[0], cartItems, setCartItems, quantity)}>Adicionar</S.AddProduct>
             </S.ButtonAddProduct>
           </S.InformationCatalog>
         </S.Catalog>

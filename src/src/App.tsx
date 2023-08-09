@@ -3,15 +3,12 @@ import './style.css'
 import React from 'react';
 
 import Rotas from "./routes/routes";
-import { CartProvider } from './contexts/CartContext';
 
 function App() {
   return (
-    <CartProvider>
-      <GlobalContainer>
-        <Rotas />
-      </GlobalContainer>
-    </CartProvider>
+    <GlobalContainer>
+      <Rotas />
+    </GlobalContainer>
   );
 }
 
