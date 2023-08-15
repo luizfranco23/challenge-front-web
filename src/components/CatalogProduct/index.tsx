@@ -1,31 +1,21 @@
 import * as S from "./style";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Arrow from "../../../src/img/arrow.svg";
 import Star from "../../../src/img/star.png";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Wine } from '../../../src/types/IProducts'
+import useGetProductById from "../../services/GetIdProducts";
+import { addToCart } from "../../hooks/cartUtils";
+import { CartItem } from "../../types/cartItem";
 
 export default function CatalogContainer() {
 
-  const [data, setData] = useState<Wine[]>([]);
+  const { data } = useGetProductById();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [quantity, setQuantity] = useState(1);
+
 
   useEffect(() => {
-    const localStorageId = localStorage.getItem("id");
-
-    async function getProductId() {
-      try {
-        const response = await axios.get("http://localhost:3000/products");
-        const productData = response.data.items;
-        const filterData = productData.find((e: any) => e.id == localStorageId);
-        setData(filterData ? [filterData] : []);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    getProductId();
-  }, []);
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   return (
     <S.ContainerCatalog>
@@ -66,7 +56,7 @@ export default function CatalogContainer() {
                 <p>R$</p>
                 <div>{data[0]?.priceMember}</div>
               </S.PriceMember>
-              <S.NoMember>NÃO SÓCIO R$ {data[0]?.priceNonMember}/UN</S.NoMember>
+              <S.NoMember>NÃO SÓCIO R$ {data[0]?.priceNonMember}UN</S.NoMember>
             </S.PriceProduct>
 
             <S.ComenterSommelier>
@@ -76,12 +66,13 @@ export default function CatalogContainer() {
 
             <S.ButtonAddProduct>
               <S.AmountProduct>
-                <div>-</div>
-                <p>1</p>
-                <div>+</div>
+                <div onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</div>
+                <p>{quantity}</p>
+                <div onClick={() => setQuantity(quantity + 1)}>+</div>
               </S.AmountProduct>
+
               <S.Feature />
-              <S.AddProduct>Adicionar</S.AddProduct>
+              <S.AddProduct onClick={() => addToCart(data[0], cartItems, setCartItems, quantity)}>Adicionar</S.AddProduct>
             </S.ButtonAddProduct>
           </S.InformationCatalog>
         </S.Catalog>
